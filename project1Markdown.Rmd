@@ -10,22 +10,37 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Overview
-FIXME: Overview of data and goals goes here
+In this project we are analysing car crash data from Montgomery County, MD
 
 
-## First Idea
+## Initial Cleaning
+```{r echo = TRUE}
+dat = read.csv("crashreports.csv")
+## FIXME
+## data cleaning goes here - removing low-predictor factors etc
+dat$dtime = strptime(as.character(dat$Crash.Date.Time),"%m/%d/%Y %I:%M:%S %p", tz="EST")
+```
 
-- Heck
-- Heck
 
-
-## Second Idea
+## Time Analysis
 
 ```{r echo = TRUE}
+## Crashes by Days of the Week
+dayTable = table(dat$dtime$wday)
+par(las=2,mfrow=c(1,2))
+barplot(dayTable, main ="Crashes: Day of Week (2015-2018)", names.arg = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),col = "green")
+monthTable = table(dat$dtime$mon)
+barplot(monthTable, main="Crashes: By Month (2015-2018)",names.arg = month.name)
+##FIXME make these plots pretty af
+```
+
+## Distraction causes
+
+```{r }
 
 ```
 
-## Third Idea
+## Mapping some things
 
 ```{r }
 

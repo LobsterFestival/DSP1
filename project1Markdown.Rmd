@@ -1,0 +1,33 @@
+---
+title: "Montgomery County, MD Accidents Analysis"
+author: "Jeremy Locatelli, Fernando Madrigal"
+date: "March 15, 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+FIXME: Overview of data and goals goes here
+
+
+## First Idea
+
+- Heck
+- Heck
+
+
+## Second Idea
+
+```{r echo = TRUE}
+
+```
+
+## Third Idea
+
+```{r }
+
+```
+

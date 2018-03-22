@@ -34,15 +34,33 @@ barplot(monthTable, main="Crashes: By Month (2015-2018)",names.arg = month.name)
 ##FIXME make these plots pretty af
 ```
 
-## Distraction causes
+## Crash Occurances by hour: Weekends
 
 ```{r }
+sun = table(dat$dtime$hour[dat$dtime$wday == 0]) 
+sat= table(dat$dtime$hour[dat$dtime$wday == 6])
+## Weekends
+plot(sat,type = "l", main = "Crashes per hour (weekends)", col = "red", xlab = "Hour",ylab = "number of incidents") 
+lines(sun,type = "l", col="green")
+
+
 
 ```
 
-## Mapping some things
+## Crash Occurances by hour: Weekdays
 
 ```{r }
-
+mon = table(dat$dtime$hour[dat$dtime$wday == 1])
+tues = table(dat$dtime$hour[dat$dtime$wday == 2])
+wed = table(dat$dtime$hour[dat$dtime$wday == 3])
+thur = table(dat$dtime$hour[dat$dtime$wday == 4])
+fri = table(dat$dtime$hour[dat$dtime$wday == 5])
+## Weekdays
+plot(tues,type = "l", main = "Crashes per hour (weekdays)", col = "#A7226E", xlab = "Hour",ylab = "number of incidents") 
+lines(mon,type = "l", col="#EC2049")
+lines(wed,type = "l", col="#F26B38")
+lines(thur,type = "l", col="#F7DB4F")
+lines(fri,type = "l", col="#2F9599")
+##FIXME add a legend this is a mess
 ```
 

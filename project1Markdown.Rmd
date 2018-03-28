@@ -20,9 +20,22 @@ dat = read.csv("C:/Users/olga_/Documents/Crash_Reporting.csv")
 ## data cleaning goes here - removing low-predictor factors etc
 dat$Local.Case.Number = NULL
 dat$Report.Number = NULL
-dat$Related.Non.Motorist = NULL
-dat$Non.Motorist.Substance.Abuse = NULL
+dat$Related.Non.Motorist = NULL #REASON: 96 percent of this column has empty strings and we are not using this column
+dat$Non.Motorist.Substance.Abuse = NULL 
 dat$Off.Road.Description = NULL
+dat$Circumstance[dat$Circumstance == "N/A"] = NA
+dat$Municipality[dat$Municipality == "N/A"] = NA
+dat$Municipality[dat$Municipality == ""] = NA
+dat$Collision.Type[dat$Collision.Type == "N/A"] = NA
+dat$Weather[dat$Weather == "N/A"] = NA
+dat$Surface.Condition[dat$Surface.Condition == "N/A"] = NA
+dat$Light[dat$Light == "N/A"] = NA
+dat$Traffic.Control[dat$Traffic.Control == "N/A"] = NA
+dat$Driver.Substance.Abuse[dat$Driver.Substance.Abuse == "N/A"] = NA
+dat$Vehicle.Damage.Extent[dat$Vehicle.Damage.Extent == "N/A"] = NA
+dat$Vehicle.Body.Type[dat$Vehicle.Body.Type == "N/A"] = NA
+dat$Vehicle.Movement[dat$Vehicle.Movement == "N/A"] = NA
+
 dat$dtime = strptime(as.character(dat$Crash.Date.Time),"%m/%d/%Y %I:%M:%S %p", tz="EST")
 ```
 
@@ -68,13 +81,12 @@ lines(fri,type = "l", col="#2F9599")
 ##FIXME add a legend this is a mess
 ```
 
-## Top 5 Distracted Drivers
+## Distracted Drivers
 
 ```{r }
-par(mar=c(3,14,3,5), las = 2) #bottom, left, top, right
+par(mar=c(4,20,4,4), las = 1) #bottom, left, top, right
 y =sort(table(dat$Driver.Distracted.By)/nrow(dat), decreasing = TRUE)
-#barplot(y[2:11],main ="Top 10 Distracted Drivers",ylim=c(0,1),col = "green",las = 1)
-barplot(y[1:5],main ="Top 5 Distracted Drivers",ylab = "Percentage",ylim=c(0,1),col = "green",las = 1)
+barplot(y,main ="Non Distracted/Distracted Drivers",xlab = "Percentage",xlim=c(0,1),col = "green",las = 2, axes = TRUE,names.arg = row.names(y),cex.names = .75,horiz = TRUE)
 ```
 
 ## Agencies Responding to Different types of Crashes

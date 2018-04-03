@@ -66,6 +66,7 @@ sat= table(dat$dtime$hour[dat$dtime$wday == 6])
 ## Weekends
 plot(sat,type = "l", main = "Crashes per hour (weekends)", col = "red", xlab = "Hour",ylab = "number of incidents") 
 lines(sun,type = "l", col="green")
+legend("topleft",legend = c("Sundays","Saturdays"),col = c("green","red"),lty = c(1,1),bty ="n")
 
 
 

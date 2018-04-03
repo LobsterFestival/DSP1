@@ -2,7 +2,6 @@
 title: "Montgomery County, MD Accidents Analysis"
 author: "Jeremy Locatelli, Fernando Madrigal"
 date: "March 15, 2018"
-output: ioslides_presentation
 ---
 
 ```{r setup, include=FALSE}
@@ -10,12 +9,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Overview
-In this project we are analysing car crash data from Montgomery County, MD
+In this project we are analyzing car crash data from Montgomery County, MD that was conducted from 2015 to the present date. The data displays each reported car crashes by date, location, and the severity of the crash.
 
+## Introduction
+What we will do is to analyze car crashes by the time and the agencies that responded to the car crashes. We will also look into the reason why the driver was involved in a car accident by identifying if the driver was distracted or not.
 
-## Initial Cleaning
+## Data Cleaning
+We began to clean the table by removing columns that were not necessary for us to use. For each column in our table, we removed the N/A's and replaced them with empty strings so the N/A's will not be displayed in our graphs and barplots. 
 ```{r echo = TRUE}
 dat = read.csv("C:/Users/olga_/Documents/Crash_Reporting.csv")
+
 ## FIXME
 ## data cleaning goes here - removing low-predictor factors etc
 dat$Local.Case.Number = NULL
@@ -23,36 +26,40 @@ dat$Report.Number = NULL
 dat$Related.Non.Motorist = NULL #REASON: 96 percent of this column has empty strings and we are not using this column
 dat$Non.Motorist.Substance.Abuse = NULL 
 dat$Off.Road.Description = NULL
-dat$Circumstance[dat$Circumstance == "N/A"] = NA
-dat$Municipality[dat$Municipality == "N/A"] = NA
-dat$Municipality[dat$Municipality == ""] = NA
-dat$Collision.Type[dat$Collision.Type == "N/A"] = NA
-dat$Weather[dat$Weather == "N/A"] = NA
-dat$Surface.Condition[dat$Surface.Condition == "N/A"] = NA
-dat$Light[dat$Light == "N/A"] = NA
-dat$Traffic.Control[dat$Traffic.Control == "N/A"] = NA
-dat$Driver.Substance.Abuse[dat$Driver.Substance.Abuse == "N/A"] = NA
-dat$Vehicle.Damage.Extent[dat$Vehicle.Damage.Extent == "N/A"] = NA
-dat$Vehicle.Body.Type[dat$Vehicle.Body.Type == "N/A"] = NA
-dat$Vehicle.Movement[dat$Vehicle.Movement == "N/A"] = NA
+
+# removing "N/A"'s from every column
+dat$Circumstance = gsub("N/A","", dat$Circumstance)
+dat$Municipality = gsub("N/A","", dat$Municipality)
+dat$Collision.Type = gsub("N/A","", dat$Collision.Type)
+dat$Weather = gsub("N/A","", dat$Weather)
+dat$Surface.Condition = gsub("N/A","", dat$Surface.Condition)
+dat$Light = gsub("N/A","", dat$Light)
+dat$Traffic.Control = gsub("N/A","", dat$Traffic.Control)
+dat$Driver.Substance.Abuse = gsub("N/A","", dat$Driver.Substance.Abuse)
+dat$Vehicle.Damage.Extent = gsub("N/A","", dat$Vehicle.Damage.Extent)
+dat$Vehicle.Body.Type = gsub("N/A","", dat$Vehicle.Body.Type)
+dat$Vehicle.Movement = gsub("N/A","", dat$Vehicle.Movement)
+
 
 dat$dtime = strptime(as.character(dat$Crash.Date.Time),"%m/%d/%Y %I:%M:%S %p", tz="EST")
 ```
 
-
 ## Time Analysis
-
+From the first graph, we can see the car crashes for every week. Monday through Friday shows that there has been more car crashes than the weekends. We visualize that the roads are busy during the weekdays due to drivers going to work or taking their kids to school, which there is a higher risk of car crashes. The middle graph shows the total of car crashes by month throughout 2015-2018. Lastly, we can see that there has been more car crashes in 2016.
 ```{r echo = TRUE}
 ## Crashes by Days of the Week
 dayTable = table(dat$dtime$wday)
-par(las=2,mfrow=c(1,2))
+par(las=3,mfrow=c(1,3))
 barplot(dayTable, main ="Crashes: Day of Week (2015-2018)", names.arg = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),col = "green")
 monthTable = table(dat$dtime$mon)
 barplot(monthTable, main="Crashes: By Month (2015-2018)",names.arg = month.name)
+
+yearTable = table(dat$dtime$year)
+barplot(yearTable, main= "Crashes: By Year (2015-2018)",names.arg = c("2015","2016","2017","2018"), col = "red")
 ```
 
 ## Crash Occurances by hour: Weekends
-
+We can see that there are more car crashes from 11:30 A.M to 2:00 P.M during the weekends.
 ```{r }
 sun = table(dat$dtime$hour[dat$dtime$wday == 0]) 
 sat= table(dat$dtime$hour[dat$dtime$wday == 6])
@@ -65,7 +72,7 @@ lines(sun,type = "l", col="green")
 ```
 
 ## Crash Occurances by hour: Weekdays
-
+We can see that there are more car crashes in the mornings from 7:00 A.M to 10:00 A.M and in the afternoons from 4:00 P.M to 7:00 P.M during the weekdays. As displayed from our previous graph, there is a connection that there are reports of higher car crashes on the weekdays.
 ```{r }
 mon = table(dat$dtime$hour[dat$dtime$wday == 1])
 tues = table(dat$dtime$hour[dat$dtime$wday == 2])
@@ -78,11 +85,10 @@ lines(mon,type = "l", col="#EC2049")
 lines(wed,type = "l", col="#F26B38")
 lines(thur,type = "l", col="#F7DB4F")
 lines(fri,type = "l", col="#2F9599")
-##FIXME add a legend this is a mess
 ```
 
-## Distracted Drivers
-
+## Non/Distracted Drivers
+For this barplot, we can see whether drivers were distracted to predict whether it is the reason why the driver crashed. 64 percent of drivers were not distracted, which seems that the roads are busy during a certain time or other drivers were the ones that caused the accident. The rest of the graph shows a small percentage of distracted drivers.
 ```{r }
 par(mar=c(4,20,4,4), las = 1) #bottom, left, top, right
 y =sort(table(dat$Driver.Distracted.By)/nrow(dat), decreasing = TRUE)
@@ -90,17 +96,21 @@ barplot(y,main ="Non Distracted/Distracted Drivers",xlab = "Percentage",xlim=c(0
 ```
 
 ## Agencies Responding to Different types of Crashes
-
+For these three graphs, we see each agency responding to different types of crashes. We can see that the number of most responding agencies is the Montgomery County Police. The graph tells us that the Montgomery County Police deal with crashes from busy streets and they are the first responders in Montgomery County. As for the other agencies, their locations are from rural areas with no reports of fatal crashes.
 ```{r }
-par(mar=c(3,12,3,5), las = 2) #bottom, left, top, right
+par(mar=c(8,15,3,5), las = 2) #bottom, left, top, right
 x = sort(table(dat$Agency.Name[dat$ACRS.Report.Type == "Property Damage Crash"]),decreasing = TRUE)
 barplot(x,col = "green",horiz = TRUE,main = "Agencies Responding to Property Damage Crashes")
 
-par(mar=c(3,12,3,5), las = 2) #bottom, left, top, right
+par(mar=c(8,15,3,5), las = 2) #bottom, left, top, right
 x = sort(table(dat$Agency.Name[dat$ACRS.Report.Type == "Injury Crash"]),decreasing = TRUE)
 barplot(x,col = "green",horiz = TRUE,main = "Agencies Responding to Injury Crashes")
 
-par(mar=c(3,12,3,5), las = 2) #bottom, left, top, right
+par(mar=c(8,15,3,5), las = 2) #bottom, left, top, right
 x = sort(table(dat$Agency.Name[dat$ACRS.Report.Type == "Fatal Crash"]),decreasing = TRUE)
 barplot(x,col = "green",horiz = TRUE,main = "Agencies Responding to Fatal Crashes")
 ```
+...{r }
+##Conclusion
+What we learned is to take data and visualize the data, so we can breakdown and create many graphs to look at each case of car crashes. We learned that during the weekdays, there are more car crashes than on the weekends. The issues that we faced is that we could of added more interesting graphs such as displaying a map and the locations where there are the most car crashes. Another issue we faced is figuting out ggmap. Overall, we learned many things about this project.
+...
